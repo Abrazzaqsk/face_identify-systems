@@ -3,8 +3,6 @@
 # Use the official Python image from the Docker Hub, specifying the ARM architecture
 FROM --platform=linux/arm64 python:3.9
 
-#
-FROM --platform=linux/arm64 python:3.9
 # Set the working directory in the container
 WORKDIR /app
 
