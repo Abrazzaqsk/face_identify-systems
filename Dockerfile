@@ -1,5 +1,3 @@
-# Use the official Python image from the Docker Hub
-#FROM python:3.9
 # Use the official Python image from the Docker Hub, specifying the ARM architecture
 FROM --platform=linux/arm64 python:3.9
 
@@ -25,22 +23,26 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libtiff-dev \
     libpng-dev \
-    python3-dev
+    python3-dev \
+    && apt-get clean
 
-# Install dlib
-RUN pip install dlib
+# Install pipenv
+RUN pip install pipenv
 
-# Copy the current directory contents into the container at /app
+# Copy the Pipfile and Pipfile.lock
+COPY Pipfile Pipfile.lock /app/
+
+# Install dependencies
+RUN pipenv install --deploy --system
+
+# Copy the rest of the application code
 COPY . /app
-
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
 
 # Define environment variable
-ENV NAME World
+ENV NAME=World
 
 # Run main.py when the container launches
-CMD ["python", "Main.py"]
+CMD ["pipenv", "run", "python", "Main.py"]
